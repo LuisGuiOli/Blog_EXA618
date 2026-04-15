@@ -1,11 +1,45 @@
 <html accept-charset="UTF-8">
-<head><title>Blog Chat</title></head>
+<head>
+    <title>Blog Chat</title>
+</head>
 <body>
-<h1>Blog Guilherme</h1>
-<form method="POST" 
-action="http://localhost:8001/blog/registrar">Autor: <input type="text" size="10" name="author">
-Mensagem: <input type= "text" size="100" name="message">
-<input type="submit">
-</form>
+    <h1>Blog Guilherme</h1>
+    
+    <form id="blogForm">
+        Autor: <input type="text" size="10" name="author" id="author" required>
+        Mensagem: <input type="text" size="100" name="message" id="message" required>
+        <button type="submit">Enviar</button>
+    </form>
+
+    <hr>
+    <h3>Mensagens:</h3>
+    <div id="listaMensagens"></div>
+
+    <script>
+        const form = document.getElementById('blogForm');
+        // Mude para a URL do seu projeto na Vercel quando fizer o deploy
+        const API_URL = "http://localhost:8001/blog/registrar"; 
+
+        form.onsubmit = async (e) => {
+            e.preventDefault(); // Impede o recarregamento da página
+
+            const payload = {
+                author: document.getElementById('author').value,
+                message: document.getElementById('message').value
+            };
+
+            // Envia para a API FastAPI
+            const response = await fetch(API_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            if (response.ok) {
+                alert("Mensagem salva no Redis!");
+                location.reload(); // Recarrega para ver a nova mensagem
+            }
+        };
+    </script>
 </body>
 </html>
