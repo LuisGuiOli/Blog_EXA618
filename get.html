@@ -1,21 +1,11 @@
-<script>
-    const form = document.querySelector('form');
-    form.onsubmit = async (e) => {
-        e.preventDefault();
-        const formData = new FormData(form);
-        const data = Object.fromEntries(formData);
-
-        const response = await fetch("https://blog-exa-618.vercel.app/blog/registrar", {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data)
-        });
-
-        if (response.ok) {
-            alert("Sucesso!");
-            window.location.reload();
-        } else {
-            alert("Erro ao enviar");
-        }
-    };
-</script>
+<html accept-charset="UTF-8">
+<head><title>Blog Chat</title></head>
+<body>
+<h1>Blog Guilherme</h1>
+<form method="POST" 
+action="https://blog-exa-618.vercel.app/blog/registrar">Autor: <input type="text" size="10" name="author">
+Mensagem: <input type= "text" size="100" name="message">
+<input type="submit">
+</form>
+</body>
+</html>
