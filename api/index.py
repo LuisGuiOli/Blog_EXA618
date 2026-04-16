@@ -19,7 +19,7 @@ REDIS_URL = os.getenv("KV_URL")
 r = redis.Redis.from_url(REDIS_URL, decode_responses=True)
 
 
-@app.post("/registrar")
+@app.post("/api")
 def enviar_mensagem(author: str, message: str):
     nova_mensagem = {
         "author": author,
