@@ -1,20 +1,15 @@
 import os
 import json
+import redis
 from fastapi import FastAPI
 import datetime
 
 app = FastAPI()
 
-ARQUIVO_JSON = "mensagens.json"
+REDIS_URL = os.getenv("KV_URL")
 
-def carregar_dados():
-    if not os.path.exists(ARQUIVO_JSON):
-        return []
-    try:
-        with open(ARQUIVO_JSON, "r", encoding="utf-8") as f:
-            return json.load(f)
-    except (json.JSONDecodeError, IOError):
-        return []
+r = redis.Redis.from_url(REDIS_URL, decode_responses=True)
+
 
 @app.post("/blog/registrar")
 def registrar(author: str, message: str):
@@ -24,14 +19,11 @@ def registrar(author: str, message: str):
         "timestamp": str(datetime.datetime.now())
     }
     
-    mensagens = carregar_dados()
+    r.lpush("mensagens_blog", json.dumps(nova_mensagem))
     
-    mensagens.insert(0, nova_mensagem)
-    with open(ARQUIVO_JSON, "w", encoding="utf-8") as f:
-        json.dump(mensagens, f, indent=4, ensure_ascii=False)
-        
-    return {"status": "Mensagem salva no arquivo JSON!"}
+    return {"status": "Mensagem salva no Redis!"}
 
 @app.get("/blog/mensagens")
 def listar():
-    return carregar_dados()
+    mensagens_brutas = r.lrange("mensagens_blog", 0, -1)
+    return [json.loads(m) for m in mensagens_brutas]
