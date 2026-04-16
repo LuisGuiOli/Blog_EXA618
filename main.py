@@ -7,8 +7,8 @@ import datetime
 
 app = FastAPI()
 
-# Defina a estrutura que a API espera receber
 class Mensagem(BaseModel):
+    action: str
     author: str
     message: str
 
@@ -16,7 +16,7 @@ REDIS_URL = os.getenv("KV_URL")
 r = redis.Redis.from_url(REDIS_URL, decode_responses=True)
 
 @app.post("/blog/registrar")
-def registrar(item: Mensagem): # Use o modelo aqui
+def registrar(item: Mensagem): 
     nova_mensagem = {
         "author": item.author,
         "message": item.message,
