@@ -14,12 +14,12 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-REDIS_URL = os.getenv("REDIS_URL")
+REDIS_URL = os.getenv("KV_URL")
 
 r = redis.Redis.from_url(REDIS_URL, decode_responses=True)
 
 
-@app.post("/api/blog/registrar")
+@app.post("/registrar")
 def registrar(author: str, message: str):
     nova_mensagem = {
         "author": author,
@@ -31,7 +31,7 @@ def registrar(author: str, message: str):
     
     return {"status": "Mensagem salva no Redis!"}
 
-@app.get("/api/blog/mensagens")
+@app.get("/mensagens")
 def listar():
     mensagens_brutas = r.lrange("mensagens_blog", 0, -1)
     return [json.loads(m) for m in mensagens_brutas]
