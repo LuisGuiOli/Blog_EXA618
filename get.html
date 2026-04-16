@@ -1,21 +1,60 @@
-<script>
-    const form = document.querySelector('form');
-    form.onsubmit = async (e) => {
-        e.preventDefault();
-        const formData = new FormData(form);
-        const data = Object.fromEntries(formData);
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Blog Guilherme - Redis</title>
+</head>
+<body>
+    <h1>Blog Guilherme</h1>
+    
+    <form>
+        Autor: <input type="text" size="10" name="author" required>
+        Mensagem: <input type="text" size="100" name="message" required>
+        <button type="submit">Enviar</button>
+    </form>
 
-        const response = await fetch("https://blog-exa-618.vercel.app/blog/registrar", {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data)
-        });
+    <hr>
+    <h3>Mensagens Recentes:</h3>
+    <div id="lista-mensagens">
+        </div>
 
-        if (response.ok) {
-            alert("Sucesso!");
-            window.location.reload();
-        } else {
-            alert("Erro ao enviar");
+    <script>
+        const form = document.querySelector('form');
+        const lista = document.getElementById('lista-mensagens');
+
+        
+        form.onsubmit = async (e) => {
+            e.preventDefault();
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData);
+
+            const response = await fetch("https://blog-exa-618.vercel.app/blog/registrar", {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+
+            if (response.ok) {
+                alert("Sucesso!");
+                carregarMensagens(); 
+            } else {
+                alert("Erro ao enviar");
+            }
+        };
+
+        async function carregarMensagens() {
+            const response = await fetch("https://blog-exa-618.vercel.app/blog/mensagens");
+            const mensagens = await response.json();
+            
+            lista.innerHTML = mensagens.map(m => `
+                <div>
+                    <strong>${m.author}:</strong> ${m.message} 
+                    <small>(${m.timestamp})</small>
+                </div>
+            `).join('<br>');
         }
-    };
-</script>
+
+        carregarMensagens();
+    </script>
+</body>
+</html>
