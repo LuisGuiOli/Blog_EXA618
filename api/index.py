@@ -20,16 +20,9 @@ r = redis.Redis.from_url(REDIS_URL, decode_responses=True)
 
 
 @app.post("/api")
-def enviar_mensagem(author: str, message: str):
-    nova_mensagem = {
-        "author": author,
-        "message": message,
-        "timestamp": str(datetime.datetime.now())
-    }
-    
-    r.lpush("mensagens_blog", json.dumps(nova_mensagem))
-    
+def enviar_mensagem():
     return {"status": "Mensagem salva no Redis!"}
+
 
 @app.get("/mensagens")
 def listar():
