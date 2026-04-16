@@ -22,8 +22,3 @@ def registrar(author: str, message: str):
     r.lpush("mensagens_blog", json.dumps(nova_mensagem))
     
     return {"status": "Mensagem salva no Redis!"}
-
-@app.get("/blog/mensagens")
-def listar():
-    mensagens_brutas = r.lrange("mensagens_blog", 0, -1)
-    return [json.loads(m) for m in mensagens_brutas]
